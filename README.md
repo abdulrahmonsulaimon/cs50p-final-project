@@ -1,2 +1,2 @@
-# cs50p-final-project
+# CS50P-FINAL-PROJECT
 My CS50P Final Project
