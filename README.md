@@ -2,4 +2,4 @@
 ---
 ## AudiSpeech
 ---
-My CS50P Final Project
+AudiSpeech converts Audio Recordings to a text file and pdf
