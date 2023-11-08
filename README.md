@@ -2,4 +2,4 @@
 ---
 ## AudiSpeech
 ---
-AudiSpeech converts Audio Recordings to a text file and pdf
+AudiSpeech converts Audio Recordings to a text file and pdf.
