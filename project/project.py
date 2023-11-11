@@ -1,38 +1,68 @@
 import tkinter as tk
 from halo import Halo
-from tqdm import tqdm
 import time
+import wave
+import sys
+import pyaudio
+import threading
 
+stopped = False
+class StopError(Exception):
+    def __init__(self, message="Stopped!"):
+        self.message = message
+        super().__init__(self.message)
 
+# ++ spinner ++
 spinner = Halo(text="Recording...", spinner="dots")
 
 def show_spinner():
     spinner.start()
-    
+
 def hide_spinner():
     spinner.stop()
-  
-  
-    
+# ++ spinner ++
+
+# === voice recording ===
+def start_voice_recording(output_wav_file="output.wav", RECORD_SECONDS=360):
+    CHUNK = 1024
+    FORMAT = pyaudio.paInt16
+    CHANNELS = 1 if sys.platform == 'darwin' else 2
+    RATE = 44100
+
+    with wave.open(output_wav_file, 'wb') as wf:
+        p = pyaudio.PyAudio()
+        wf.setnchannels(CHANNELS)
+        wf.setsampwidth(p.get_sample_size(FORMAT))
+        wf.setframerate(RATE)
+
+        stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True)
+
+        try:
+            for _ in range(0, res := int(RATE / CHUNK * RECORD_SECONDS)):
+                if not stopped:
+                    wf.writeframes(stream.read(CHUNK))
+                else:
+                    raise StopError()
+        except StopError:
+            ...
+
+        stream.stop_stream()
+        stream.close()
+        p.terminate()
+
+# === voice recording ===
+
 def record():
-    record_button.pack_forget()
-    stop_record_button.pack()
+    global stopped
+    stopped = False
     show_spinner()
-    
-    
+    threading.Thread(target=start_voice_recording).start()
+
 def stop_record():
-    stop_record_button.pack_forget()
-    record_button.pack()
+    global stopped
+    stopped = True
     hide_spinner()
-
-    for _ in tqdm(range(1), desc="Saving...", ncols=75):
-        time.sleep(0.1) # replace
-    print("\nSaved!")
-    
-
-def btn_hover(e):
-    ...
-
+    sys.exit("Done!")
 
 def main():
     window = tk.Tk()
@@ -44,8 +74,6 @@ def main():
         window, text="Click to record", font=("Helvetica", 20, "bold"), bg="lightblue"
     )
     label.pack(pady=10)
-    
-    global record_button, stop_record_button
 
     record_button = tk.Button(
         window,
@@ -71,16 +99,10 @@ def main():
         command=stop_record
     )
 
-
-    stop_record_button.pack_forget()
     record_button.pack(pady=10)
-    
-    # stop_record_button.bind("<Enter>", btn_hover)
-    # record_button.bind("<Enter>", btn_hover)
-
+    stop_record_button.pack(pady=10)
 
     window.mainloop()
-
 
 if __name__ == "__main__":
     main()
