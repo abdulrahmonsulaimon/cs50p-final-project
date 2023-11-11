@@ -11,11 +11,11 @@ import pyttsx3
 
 stopped = False
 
+
 class StopError(Exception):
     def __init__(self, message="Stopped!"):
         self.message = message
         super().__init__(self.message)
-
 
 
 def wav_to_txt(wav_path=None):
@@ -30,12 +30,11 @@ def wav_to_txt(wav_path=None):
         text = r.recognize_google(audio)
         with open("output.txt", "w") as file:
             file.write(text)
-              
+
     except sr.UnknownValueError:
         print("Could not understand the audio")
     except sr.RequestError as e:
         print(f"Request Error!: {e}")
-
 
 
 def txt_to_pdf(txt_path=None):
@@ -43,12 +42,11 @@ def txt_to_pdf(txt_path=None):
 
 
 def read_txt(text=None, txt_path="output.txt"):
-
     with open(txt_path, "r") as file:
         text = file.readlines()
-    
+
     for line in text:
-        print(line)  
+        print(line)
         engine = pyttsx3.init()
         engine.say(line)
         engine.runAndWait()
@@ -97,6 +95,8 @@ def start_voice_recording(output_wav_file="output.wav", RECORD_SECONDS=360):
         stream.close()
         p.terminate()
         wav_to_txt()
+
+
 # === voice recording ===
 
 
@@ -112,8 +112,6 @@ def stop_record():
     stopped = True
     hide_spinner()
     sys.exit("Done!")
-
-
 
 
 # <=== UI ===>
@@ -168,6 +166,8 @@ def main():
     read_txt_button.pack(pady=10)
 
     window.mainloop()
+
+
 # <=== UI ===>
 
 
