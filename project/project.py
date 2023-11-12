@@ -66,14 +66,11 @@ def read_txt(text=None, txt_path="output.txt"):
 # ++ spinner ++
 spinner = Halo(text="Recording...", spinner="dots")
 
-
 def show_spinner():
     spinner.start()
 
-
 def hide_spinner():
     spinner.stop()
-
 
 # ++ spinner ++
 
@@ -108,8 +105,6 @@ def start_voice_recording(output_wav_file="output.wav", RECORD_SECONDS=360):
         wav_to_txt()
         file, _ = path.splitext(output_wav_file)
         txt_to_pdf(f"{file}.txt")
-
-
 # === voice recording ===
 
 
@@ -118,7 +113,6 @@ def record():
     stopped = False
     show_spinner()
     threading.Thread(target=start_voice_recording).start()
-
 
 def stop_record():
     global stopped
@@ -179,8 +173,6 @@ def main():
     read_txt_button.pack(pady=10)
 
     window.mainloop()
-
-
 # <=== UI ===>
 
 
