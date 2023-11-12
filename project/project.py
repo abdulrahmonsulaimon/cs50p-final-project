@@ -7,7 +7,7 @@ import pyaudio
 import threading
 import speech_recognition as sr
 import pyttsx3
-
+from fpdf import FPDF
 
 stopped = False
 
@@ -37,9 +37,20 @@ def wav_to_txt(wav_path=None):
         print(f"Request Error!: {e}")
 
 
-def txt_to_pdf(txt_path=None):
-    ...
+def txt_to_pdf(input_file, output_pdf="output.pdf"):
+    pdf = FPDF(format='A4')
+    pdf.add_page()
+    pdf.set_font("Helvetica", size=12)
 
+    with open(input_file, 'r') as text_file:
+        lines = text_file.readlines()
+
+    for line in lines:
+        pdf.cell(200, 10, txt=line, ln=True)
+
+    pdf.output(output_pdf)
+
+    print(f'Text file "{input_file}" has been converted to PDF: "{output_pdf}"!')
 
 def read_txt(text=None, txt_path="output.txt"):
     with open(txt_path, "r") as file:
@@ -95,6 +106,8 @@ def start_voice_recording(output_wav_file="output.wav", RECORD_SECONDS=360):
         stream.close()
         p.terminate()
         wav_to_txt()
+        file, _ = path.splitext(output_wav_file)
+        txt_to_pdf(f"{file}.txt")
 
 
 # === voice recording ===
@@ -111,7 +124,7 @@ def stop_record():
     global stopped
     stopped = True
     hide_spinner()
-    sys.exit("Done!")
+    print("Done!")
 
 
 # <=== UI ===>
